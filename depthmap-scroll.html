@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    	</head>
+	<body>
+
+<div style="height:90vh; display: block;"></div>
+
+<style>#wetplate canvas {display:block; margin-left: auto; margin-right: auto; max-width:90vw;}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollTrigger.min.js"></script>
+<div id="wetplate"></div>
+
+
+
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+let app = new PIXI.Application({width: 920, height: 1150, antialias: true});
+
+const wetplate = document.querySelector('#wetplate');
+wetplate.appendChild(app.view);
+
+window.USER_IS_TOUCHING = false;
+const multiplexer = 1;
+var displacefactor = 20;
+const paralaxarea = document.querySelector('#wetplate canvas');
+
+let background = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c071ba16b241de16e34c/1617346691057/cutout-backgorund.png");
+background.width = 920;
+background.height = 1150;
+background.anchor.set(0);
+app.stage.addChild(background);
+
+let img = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c032c449387c0223b77c/1617346621446/subject.png");
+//let img = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c045c894556d34c57bda/1617346636806/depth-mask.png");
+img.width = 920;
+img.height = 1150;
+img.anchor.set(0);
+app.stage.addChild(img);
+
+depthMap = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c045c894556d34c57bda/1617346636806/depth-mask.png");
+depthMap.width = 920;
+depthMap.height = 1150;
+depthMap.anchor.set(0);
+app.stage.addChild(depthMap);
+
+displacementFilter = new PIXI.filters.DisplacementFilter(depthMap);
+displacementFilter.scale.x = 0;
+displacementFilter.scale.y = 0;
+
+img.filters = [displacementFilter];
+
+let frame = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c090c894556d34c57cb0/1617346711628/cutout-frame.png");
+frame.width = 920;
+frame.height = 1150;
+frame.anchor.set(0);
+app.stage.addChild(frame);
+
+// BEGIN SECTION // FOR TESTING PURPOSES -- REMOVE WIN FINISHED 
+const graphics = new PIXI.Graphics();
+graphics.lineStyle(2, 0xFFFFFF, .25);
+//graphics.beginFill(0x35CC5A, 1);
+graphics.drawStar(img.width/2, img.height/2, 5, 1);
+graphics.endFill();
+app.stage.addChild(graphics);
+
+const style = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 12,
+    fill: ['#ffffff', '#dddddd'], // gradient
+    wordWrap: true,
+    wordWrapWidth: 440,
+    lineJoin: 'round',
+    align:'left',
+});
+
+const displacementText = new PIXI.Text('displacement: (0,0)', style);
+displacementText.x = img.x +10;
+displacementText.y = 5;
+app.stage.addChild(displacementText);
+
+const pointerText = new PIXI.Text('pointer: (0,0)', style);
+pointerText.x = img.x +10;
+pointerText.y = 25;
+app.stage.addChild(pointerText);
+
+const canvasText = new PIXI.Text('canvas: (0,0)', style);
+canvasText.x = img.x +10;
+canvasText.y = 45;
+app.stage.addChild(canvasText);
+
+const sizeText = new PIXI.Text('size: ???', style);
+sizeText.x = img.x +10;
+sizeText.y = 65;
+app.stage.addChild(sizeText);
+
+const touchText = new PIXI.Text('touch: FALSE', style);
+touchText.x = img.x +10;
+touchText.y = 85;
+app.stage.addChild(touchText);
+// END SECTION // FOR TESTING PURPOSES -- REMOVE WIN FINISHED 
+
+
+
+
+window.addEventListener('touchstart', function onFirstTouch(){
+  window.USER_IS_TOUCHING = true;
+  console.log('this is a touch screen enabled device');
+});
+
+
+
+
+//window.onpointerleave = function(e) {
+//  gsap.to(displacementFilter.scale, {x: 0, y: 0, duration: 1, repeat: 0, yoyo: false, delay: .5,});
+//}
+
+
+
+
+
+
+/*paralaxarea.onpointermove = function(e) {
+  const target = e.target;
+  const rect = target.getBoundingClientRect();
+  const xpos = e.clientX - rect.left;
+  const ypos = e.clientY - rect.top;
+  const regx = rect.width / 2;
+  const regy = rect.height /2;
+  const multiplexer = 1;
+  var mediaSize = "size: ???";
+  var displacefactor = 20;
+
+  if(window.USER_IS_TOUCHING == true){multiplexer = .5;}
+
+  if(rect.width < 420) {
+    displacefactor = 15;
+    mediaSize = "size: small";
+  } else if (rect.width > 420 && rect.width < 800){
+    displacefactor = 30;
+    mediaSize = "size: medium";
+  } else {
+    displacefactor = 45;
+    mediaSize = "size: large";
+  }
+
+  displacementFilter.scale.x = (regx - xpos)/(multiplexer * displacefactor);
+  displacementFilter.scale.y = (regy - ypos)/(multiplexer * displacefactor);
+    
+  const scalex = (regx - xpos)/(multiplexer * displacefactor);
+  const scaley = (regy - ypos)/(multiplexer * displacefactor);
+    
+  displacementText.text = 'displacement: (' + Math.round(displacementFilter.scale.x) + ' , ' + Math.round(displacementFilter.scale.y) + ' )';
+  pointerText.text = 'pointer: (' + Math.round(xpos) + ' , ' + Math.round(ypos) + ' )';
+  canvasText.text = 'canvas: (' + rect.width + ' , ' + rect.height + ' )';
+  touchText.text = 'touch: ' + window.USER_IS_TOUCHING;
+  sizeText.text = mediaSize;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+gsap.fromTo(displacementFilter.scale, {
+  y: 0,
+  x: 0,}, 
+  {
+  y:100, x:0,
+    ease: "none",
+  scrollTrigger: {
+    trigger: paralaxarea,
+    start: "top bottom", // the default values
+    end: "bottom top",
+    scrub: true
+}
+  });
+
+ScrollTrigger.addEventListener("scrollEnd", () => console.log("scrolling ended!"));
+
+</script>
+
+<h2 id="wettitle">A Harry Potter Wet Plate</h2>
+
+
+<div style="height:90vh; display: block;"></div>
+
+
+</body>
+</html>
