@@ -6,7 +6,7 @@ wetplate.appendChild(app.view);
 const paralaxarea = document.querySelector('#wetplate canvas');
 
 
-
+var newMultiplexer
 var multiplexer;
 var mediaSize = "size: ???";
 
@@ -264,6 +264,8 @@ var maxBoundLength = maxDisplace * orientIndicatorFactor * 2;
 const maxBound = new PIXI.Graphics();
 maxBound.x = (img.width / 2) - (maxBoundLength*1.5);
 maxBound.y = (img.height / 2) - (maxBoundLength*1.5);
+//maxBound.anchor.x = 0.5;
+//maxBound.anchor.y = 0.5;
 //maxBound.beginFill(0xFFFFFF);
 maxBound.lineStyle(2, 0xFF0000, .5);
 maxBound.drawRect(maxBoundLength, maxBoundLength, maxBoundLength, maxBoundLength);
@@ -272,8 +274,22 @@ app.stage.addChild(maxBound);
 
 // END SECTION // FOR TESTING PURPOSES -- REMOVE WIN FINISHED 
 
+//let count = 0;
+app.ticker.add(() => {
+  // let's rotate the aliens a little bit
+  //for (let i = 0; i < 100; i++) {
+  //    const alien = aliens[i];
+  //    maxBound.rotation += 0.1;
+  //}
 
+  //count += 0.01;
 
+  //maxBound.scale.x = Math.sin(count);
+  //maxBound.scale.y = Math.sin(count);
+  //maxBound.rotation += 0.01;
+});
+
+app.stage.interactive = false;
 
 ///////////////////////////////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////////////////
 
@@ -334,33 +350,67 @@ function requestDevicePermission(e) {
 
 
 
-
+multiplexer = 10;
+var prevXpos;
+var prevYpos;
+var cursorXdelta;
+var cursorYdelta;
 
 function displaceByMouse(e) {
-  const target = e.target;
+  //const target = e.target;
   rect = paralaxarea.getBoundingClientRect();
   //rect = window.innerWidth;
-  xpos = e.clientX - rect.left + clientXdelta;
-  ypos = e.clientY - rect.top + clientYdelta;
-  regx = rect.width / 2;
-  regy = rect.height /2;
-  multiplexer = 30;
+  
+  prevXpos = xpos;
+  prevYpos = ypos;
+  
+  //position of pointer within the canvas
+  xpos = e.clientX;
+  ypos = e.clientY;
+  
+  regx = rect.width / 2 + rect.left;
+  regy = rect.height / 2 + rect.top;
 
   //if(USER_IS_TOUCHING == true){multiplexer = .5;}
 
-  if(rect.width < 420) {
+  /*if(rect.width < 420) {
     multiplexer = 20;
     mediaSize = "size: small " + multiplexer;
   } else if (rect.width > 420 && rect.width < 800){
-    multiplexer = 30;
+    multiplexer = 10;
     mediaSize = "size: medium " + multiplexer;
   } else {
     multiplexer = 40;
     mediaSize = "size: large " + multiplexer;
-  }
+  }*/
 
-  displacementFilter.scale.x = (regx - xpos)/(multiplexer);
-  displacementFilter.scale.y = (regy - ypos)/(multiplexer);
+  
+  var distToRegX = Math.abs(regx - xpos)/(window.innerWidth/2);
+  var distToRegY = Math.abs(regy - ypos)/(window.innerHeight/2);
+
+  var prevDistToRegX = Math.abs(regx - prevXpos)/(window.innerWidth/2);
+  var prevDdistToRegY = Math.abs(regy - prevYpos)/(window.innerHeight/2);
+
+
+  cursorXdelta = Math.sign(prevDistToRegX + distToRegX);
+  cursorYdelta = Math.sign(prevDdistToRegY + distToRegY);
+
+  newMultiplexerX = 2 - Math.round(distToRegX*10)/10;
+  newMultiplexerY = 2 - Math.round(distToRegY*10)/10;
+
+  if(cursorXdelta != 0) {}// * cursorXdelta;} //x distance the pointer is from x registration as a percentage of the window
+  if(cursorYdelta != 0) {};// * cursorYdelta;} //y distance the pointer is from y registration as a percentage of the window
+
+  
+  //window.innerWidth; 
+  
+  //console.log('multiplexer: ' + multiplexer);
+
+  displacementFilter.scale.x = (regx - xpos)/(multiplexer / (newMultiplexerX/4));
+  displacementFilter.scale.y = (regy - ypos)/(multiplexer / (newMultiplexerY/4));
+
+//console.log('newMultiplexer: (' + newMultiplexerX + ',' + newMultiplexerY + ')');
+//console.log('newMultiplexer: (' + Math.round(displacementFilter.scale.x) + ',' + Math.round(displacementFilter.scale.y) + ')');
 
   checkMaxDisplacement(displacementFilter.scale);
   updateTelemetry();
