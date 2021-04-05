@@ -6,7 +6,7 @@ wetplate.appendChild(app.view);
 const paralaxarea = document.querySelector('#wetplate canvas');
 
 
-var newMultiplexer
+var newMultiplexer;
 var multiplexer;
 var mediaSize = "size: ???";
 
