@@ -11,7 +11,7 @@ var multiplexer = .75;
 var mediaSize = "size: ???";
 
 //DISPLACE
-var displacefactor = 20;
+//var displacefactor = 20;
 var maxDisplace = 18;
 var orientIndicatorFactor = 4;  
   
@@ -360,8 +360,8 @@ function displaceByMouse(e) {
     mediaSize = "size: large";
   }
 
-  displacementFilter.scale.x = (regx - xpos)/(multiplexer * displacefactor);
-  displacementFilter.scale.y = (regy - ypos)/(multiplexer * displacefactor);
+  displacementFilter.scale.x = (regx - xpos);///(multiplexer * displacefactor);
+  displacementFilter.scale.y = (regy - ypos);///(multiplexer * displacefactor);
 
   checkMaxDisplacement(displacementFilter.scale);
   updateTelemetry();
