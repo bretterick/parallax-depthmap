@@ -345,7 +345,7 @@ function displaceByMouse(e) {
   ypos = e.clientY - rect.top;
   regx = rect.width / 2;
   regy = rect.height /2;
-  multiplexer = 5;
+  multiplexer = 30;
 
   if(USER_IS_TOUCHING == true){multiplexer = .5;}
 
@@ -360,8 +360,8 @@ function displaceByMouse(e) {
     mediaSize = "size: large";
   }
 
-  displacementFilter.scale.x = (regx - xpos);///(multiplexer * displacefactor);
-  displacementFilter.scale.y = (regy - ypos);///(multiplexer * displacefactor);
+  displacementFilter.scale.x = (regx - xpos)/(multiplexer);
+  displacementFilter.scale.y = (regy - ypos)/(multiplexer);
 
   checkMaxDisplacement(displacementFilter.scale);
   updateTelemetry();
