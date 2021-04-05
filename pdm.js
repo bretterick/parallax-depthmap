@@ -7,7 +7,7 @@ const paralaxarea = document.querySelector('#wetplate canvas');
 
 
 
-var multiplexer = .75;
+var multiplexer;
 var mediaSize = "size: ???";
 
 //DISPLACE
@@ -208,7 +208,6 @@ initrText.x = img.x +400;
 initrText.y = 155;
 app.stage.addChild(initrText);
 
-
 //Device Motion
 const accelxText = new PIXI.Text('accel X: ', style);
 accelxText.x = img.x +10;
@@ -225,23 +224,21 @@ accelzText.x = img.x +10;
 accelzText.y = 225;
 app.stage.addChild(accelzText);
 
-
 const accelGravxText = new PIXI.Text('accelGrav X: ', style);
 accelGravxText.x = img.x +10;
 accelGravxText.y = 255;
 app.stage.addChild(accelGravxText);
-                    
+
 const accelGravyText = new PIXI.Text('accelGrav Y: ', style);
 accelGravyText.x = img.x +10;
 accelGravyText.y = 275;
 app.stage.addChild(accelGravyText);
-                    
+
 const accelGravzText = new PIXI.Text('accelGrav Z: ', style);
 accelGravzText.x = img.x +10;
 accelGravzText.y = 295;
 app.stage.addChild(accelGravzText);
-                    
-                    
+
 const rotRateAlphaText = new PIXI.Text('rotRate Alpha: ', style);
 rotRateAlphaText.x = img.x +10;
 rotRateAlphaText.y = 325;
@@ -275,8 +272,6 @@ app.stage.addChild(maxBound);
 
 // END SECTION // FOR TESTING PURPOSES -- REMOVE WIN FINISHED 
 
-console.log(maxBound);
-
 
 
 
@@ -300,8 +295,7 @@ window.orientation.addEventListener('change-window', function() {console.log('ne
 
 function requestDevicePermission(e) {
 
-  console.log('device motion!');
-  
+  console.log('test for device motion!');
   DeviceMotionEvent.requestPermission()
     .then(response => {
       if (response == 'granted') {
@@ -330,6 +324,10 @@ function requestDevicePermission(e) {
       }
     })
   .catch(console.error) 
+  
+  if(deviceMotionEnabled = false){
+    window.addEventListener('pointermove', displaceByMouse);
+  }
 }
 
 
@@ -348,17 +346,17 @@ function displaceByMouse(e) {
   regy = rect.height /2;
   multiplexer = 30;
 
-  if(USER_IS_TOUCHING == true){multiplexer = .5;}
+  //if(USER_IS_TOUCHING == true){multiplexer = .5;}
 
   if(rect.width < 420) {
     multiplexer = 20;
-    mediaSize = "size: small";
+    mediaSize = "size: small " + multiplexer;
   } else if (rect.width > 420 && rect.width < 800){
     multiplexer = 30;
-    mediaSize = "size: medium";
+    mediaSize = "size: medium " + multiplexer;
   } else {
     multiplexer = 40;
-    mediaSize = "size: large";
+    mediaSize = "size: large " + multiplexer;
   }
 
   displacementFilter.scale.x = (regx - xpos)/(multiplexer);
