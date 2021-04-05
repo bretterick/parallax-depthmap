@@ -1,23 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    	</head>
-	<body>
-
-<style>#wetplate canvas {display:block; margin-left: auto; margin-right: auto; max-width:80vw;}</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
-<button id="permission" style="margin-left:auto; margin-right:auto; display:block;">Grant Permission</button>
-<br>
-<div id="wetplate"></div>
-
-
-<script src="https://cdn.jsdelivr.net/gh/bretterick/parallax-depthmap/pdm.js"></script>
-
-<script>
 let app = new PIXI.Application({width: 920, height: 1150, antialias: true});
 
 const wetplate = document.querySelector('#wetplate');
@@ -574,9 +554,3 @@ function checkMaxDisplacement(e) {
   if(e.y >= maxDisplace) {displacementFilter.scale.y = maxDisplace;} //Too far down
   if(e.y <= -maxDisplace){displacementFilter.scale.y = -maxDisplace;} //too far top
 }
-</script>  
-
-
-
-</body>
-</html>
