@@ -49,9 +49,10 @@ var rect = {};
 var showTelemetry = true;
 var USER_IS_TOUCHING = false;
 
-
-
-
+var clientXdelta = 0;
+var clientYdelta = 0;
+var i = 0;
+var j = 0;
 
 
 
@@ -341,8 +342,8 @@ function displaceByMouse(e) {
   const target = e.target;
   rect = paralaxarea.getBoundingClientRect();
   //rect = window.innerWidth;
-  xpos = e.clientX - rect.left;
-  ypos = e.clientY - rect.top;
+  xpos = e.clientX - rect.left + clientXdelta;
+  ypos = e.clientY - rect.top + clientYdelta;
   regx = rect.width / 2;
   regy = rect.height /2;
   multiplexer = 30;
@@ -350,13 +351,13 @@ function displaceByMouse(e) {
   if(USER_IS_TOUCHING == true){multiplexer = .5;}
 
   if(rect.width < 420) {
-    displacefactor = 15;
+    multiplexer = 20;
     mediaSize = "size: small";
   } else if (rect.width > 420 && rect.width < 800){
-    displacefactor = 30;
+    multiplexer = 30;
     mediaSize = "size: medium";
   } else {
-    displacefactor = 45;
+    multiplexer = 40;
     mediaSize = "size: large";
   }
 
@@ -549,8 +550,26 @@ function determineOrientation() {
 
 
 function checkMaxDisplacement(e) {
-  if(e.x >= maxDisplace) {displacementFilter.scale.x = maxDisplace;} //Too far right
-  if(e.x <= -maxDisplace){displacementFilter.scale.x = -maxDisplace;} //too far left
-  if(e.y >= maxDisplace) {displacementFilter.scale.y = maxDisplace;} //Too far down
-  if(e.y <= -maxDisplace){displacementFilter.scale.y = -maxDisplace;} //too far top
+  var xFlag;
+  var yFlag;
+  if(e.x >= maxDisplace) {displacementFilter.scale.x = maxDisplace; i++; xFlag = 1} //Too far right
+  if(e.x <= -maxDisplace){displacementFilter.scale.x = -maxDisplace; i++; xFlag = -1} //too far left
+  
+  
+  if(e.y >= maxDisplace) {displacementFilter.scale.y = maxDisplace; i++; yFlag = 1} //Too far down
+  if(e.y <= -maxDisplace){displacementFilter.scale.y = -maxDisplace; i++; yFlag = -1} //too far top
+  
+  if(i<=2) {
+    //clientXdelta = clientXdelta + (xFlag * multiplexer);
+    i = 0;
+  }
+  if(j<=2) {
+    //clientYdelta = clientYdelta + (yFlag * multiplexer);
+    j = 0;
+  }
 }
+
+
+
+
+
