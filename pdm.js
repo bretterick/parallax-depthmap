@@ -7,7 +7,7 @@ const paralaxarea = document.querySelector('#wetplate canvas');
 
 
 var newMultiplexer;
-var multiplexer;
+var multiplexer = 30;
 var mediaSize = "size: ???";
 
 //DISPLACE
@@ -54,6 +54,12 @@ var clientYdelta = 0;
 var i = 0;
 var j = 0;
 
+var prevXpos;
+var prevYpos;
+var cursorXdelta;
+var cursorYdelta;
+var distToRegX;
+var distToRegY;
 
 
 
@@ -159,6 +165,18 @@ const touchText = new PIXI.Text('touch: FALSE', style);
 touchText.x = img.x +10;
 touchText.y = 85;
 app.stage.addChild(touchText);
+
+const newMultiplexerXText = new PIXI.Text('newMultiplexerX: XX', style);
+newMultiplexerXText.x = img.x +200;
+newMultiplexerXText.y = 5;
+app.stage.addChild(newMultiplexerXText);
+
+const newMultiplexerYText = new PIXI.Text('newMultiplexerY: XX', style);
+newMultiplexerYText.x = img.x +200;
+newMultiplexerYText.y = 25;
+app.stage.addChild(newMultiplexerYText);
+
+
 
 //Device Orientation
 const orientxText = new PIXI.Text('orient X: ', style);
@@ -289,7 +307,7 @@ app.ticker.add(() => {
   //maxBound.rotation += 0.01;
 });
 
-app.stage.interactive = false;
+//app.stage.interactive = false;
 
 ///////////////////////////////////////////////////////////////////////////// EVENT LISTENERS ////////////////////////////////////////////////////////////////
 
@@ -350,11 +368,6 @@ function requestDevicePermission(e) {
 
 
 
-multiplexer = 10;
-var prevXpos;
-var prevYpos;
-var cursorXdelta;
-var cursorYdelta;
 
 function displaceByMouse(e) {
   //const target = e.target;
@@ -373,41 +386,35 @@ function displaceByMouse(e) {
 
   //if(USER_IS_TOUCHING == true){multiplexer = .5;}
 
-  /*if(rect.width < 420) {
+  if(rect.width < 420) {
     multiplexer = 20;
     mediaSize = "size: small " + multiplexer;
   } else if (rect.width > 420 && rect.width < 800){
-    multiplexer = 10;
+    multiplexer = 30;
     mediaSize = "size: medium " + multiplexer;
   } else {
-    multiplexer = 40;
+    multiplexer = 20;
     mediaSize = "size: large " + multiplexer;
-  }*/
+  }
 
   
-  var distToRegX = Math.abs(regx - xpos)/(window.innerWidth/2);
-  var distToRegY = Math.abs(regy - ypos)/(window.innerHeight/2);
-
-  var prevDistToRegX = Math.abs(regx - prevXpos)/(window.innerWidth/2);
-  var prevDdistToRegY = Math.abs(regy - prevYpos)/(window.innerHeight/2);
-
-
-  cursorXdelta = Math.sign(prevDistToRegX + distToRegX);
-  cursorYdelta = Math.sign(prevDdistToRegY + distToRegY);
+  distToRegX = Math.abs(regx - xpos)/(document.documentElement.clientWidth/2);
+  distToRegY = Math.abs(regy - ypos)/(document.documentElement.clientHeight/2);
 
   newMultiplexerX = 2 - Math.round(distToRegX*10)/10;
   newMultiplexerY = 2 - Math.round(distToRegY*10)/10;
 
-  if(cursorXdelta != 0) {}// * cursorXdelta;} //x distance the pointer is from x registration as a percentage of the window
-  if(cursorYdelta != 0) {};// * cursorYdelta;} //y distance the pointer is from y registration as a percentage of the window
+  //var prevDistToRegX = Math.abs(regx - prevXpos)/(document.documentElement.clientWidth/2);
+  //var prevDdistToRegY = Math.abs(regy - prevYpos)/(document.documentElement.clientHeight/2);
+    
+  //cursorXdelta = Math.sign(prevDistToRegX + distToRegX);
+  //cursorYdelta = Math.sign(prevDdistToRegY + distToRegY);
 
-  
-  //window.innerWidth; 
-  
-  //console.log('multiplexer: ' + multiplexer);
+  //if(cursorXdelta != 0) {}// * cursorXdelta;} //x distance the pointer is from x registration as a percentage of the window
+  //if(cursorYdelta != 0) {};// * cursorYdelta;} //y distance the pointer is from y registration as a percentage of the window
 
-  displacementFilter.scale.x = (regx - xpos)/(multiplexer / (newMultiplexerX/4));
-  displacementFilter.scale.y = (regy - ypos)/(multiplexer / (newMultiplexerY/4));
+  displacementFilter.scale.x = (regx - xpos)/(multiplexer / (newMultiplexerX/3));
+  displacementFilter.scale.y = (regy - ypos)/(multiplexer / (newMultiplexerY/3));
 
 //console.log('newMultiplexer: (' + newMultiplexerX + ',' + newMultiplexerY + ')');
 //console.log('newMultiplexer: (' + Math.round(displacementFilter.scale.x) + ',' + Math.round(displacementFilter.scale.y) + ')');
@@ -431,7 +438,7 @@ function orientationListener(e) {
   orientX = e.gamma;
   orientY = e.beta;
   //orientAbs = e.absolute;
-  multiplexer = 3;
+  multiplexer = 1;
 
   if (resetInitialOrientation == 0) { // Captures initial device orientation
     initR = e.alpha;
@@ -443,10 +450,16 @@ function orientationListener(e) {
 
   deltaR = orientR - 180;
   deltaX = (orientX)/2;
-  deltaY = (orientY - 50)/1.25;
+  deltaY = (orientY - 50)/3;
   
-  displacementFilter.scale.x = deltaX/multiplexer;
-  displacementFilter.scale.y = deltaY/multiplexer;
+  distToRegX = Math.abs(orientX)/(90);
+  distToRegY = Math.abs(orientY)/(180);
+
+  newMultiplexerX = 2 - Math.round(distToRegX*10)/10;
+  newMultiplexerY = 2 - Math.round(distToRegY*10)/10;
+  
+  displacementFilter.scale.x = deltaX/(multiplexer / (newMultiplexerX/3));
+  displacementFilter.scale.y = deltaY/(multiplexer / (newMultiplexerY/3));
 
   checkMaxDisplacement(displacementFilter.scale);    
   updateTelemetry();
@@ -507,7 +520,7 @@ function updateTelemetry(e) {
   
   //intervalText.text = 'interval: ' + interval;
 
-  screenOrientText.text = 'screen: ' + orientationTest;
+  //screenOrientText.text = 'screen: ' + orientationTest;
   displacementText.text = 'displacement: (' + Math.round(displacementFilter.scale.x) + ', ' + Math.round(displacementFilter.scale.y) + ')';
 
   displacementText.text = 'displacement: (' + Math.round(displacementFilter.scale.x) + ', ' + Math.round(displacementFilter.scale.y) + ')';
@@ -515,6 +528,9 @@ function updateTelemetry(e) {
   canvasText.text = 'canvas: (' + Math.round(rect.width) + ', ' + Math.round(rect.height) + ')';
   touchText.text = 'touch: ' + USER_IS_TOUCHING;
   sizeText.text = mediaSize;
+
+  newMultiplexerXText.text = 'newMultiplexerX: ' + newMultiplexerX;
+  newMultiplexerYText.text = 'newMultiplexerY: ' + newMultiplexerY;
 
   //POINTERS
   dispPointer.x = orientIndicatorFactor * displacementFilter.scale.x; //Move red pointer x
@@ -600,12 +616,15 @@ function determineOrientation() {
 function checkMaxDisplacement(e) {
   var xFlag;
   var yFlag;
-  if(e.x >= maxDisplace) {displacementFilter.scale.x = maxDisplace; i++; xFlag = 1} //Too far right
-  if(e.x <= -maxDisplace){displacementFilter.scale.x = -maxDisplace; i++; xFlag = -1} //too far left
+  if(e.x > maxDisplace) {displacementFilter.scale.x = maxDisplace; i++; xFlag = 1} //Too far right
+  if(e.x < -maxDisplace){displacementFilter.scale.x = -maxDisplace; i++; xFlag = -1} //too far left
   
   
-  if(e.y >= maxDisplace) {displacementFilter.scale.y = maxDisplace; i++; yFlag = 1} //Too far down
-  if(e.y <= -maxDisplace){displacementFilter.scale.y = -maxDisplace; i++; yFlag = -1} //too far top
+  if(e.y > maxDisplace) {displacementFilter.scale.y = maxDisplace; i++; yFlag = 1} //Too far down
+  if(e.y < -maxDisplace){displacementFilter.scale.y = -maxDisplace; i++; yFlag = -1} //too far top
+  
+  screenOrientText.text = 'displace Val (' + Math.round(e.x*10)/10 + ' , ' + Math.round(e.y*10)/10 + ')'
+  console.log('displace val (' + Math.round(e.x*10)/10 + ' , ' + Math.round(e.y*10)/10 + ')');
   
   if(i<=2) {
     //clientXdelta = clientXdelta + (xFlag * multiplexer);
