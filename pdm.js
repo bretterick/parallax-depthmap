@@ -85,20 +85,20 @@ var distToRegY;
 
 
 
-let background = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c071ba16b241de16e34c/1617346691057/cutout-backgorund.png");
+let background = new PIXI.Sprite.from("https://cdn-bretterick.netlify.app/images/cutout-backgorund.png");
 background.width = 920;
 background.height = 1150;
 background.anchor.set(0);
 app.stage.addChild(background);
 
-let img = new PIXI.Sprite.from("https://images.squarespace-cdn.com/content/v1/5aac041c9f8770c50060dca8/1617346573296-7IFPZ4B7CFYVBO20PK4Y/ke17ZwdGBToddI8pDm48kFFfHeXOggjaaPZiv_VJR2V7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1UWJYqKOJCeMbNdFWOXgIdYq00-j6f9IpG2870L5cwZUe7zs2yPjc1ECvpa5Zm_kMqw/subject.png?format=1000w");
-//let img = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c045c894556d34c57bda/1617346636806/depth-mask.png");
+let img = new PIXI.Sprite.from("https://cdn-bretterick.netlify.app/images/subject.png");
+//let img = new PIXI.Sprite.from("https://cdn-bretterick.netlify.app/images/depth-mask.png");
 img.width = 920;
 img.height = 1150;
 img.anchor.set(0);
 app.stage.addChild(img);
 
-depthMap = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c045c894556d34c57bda/1617346636806/depth-mask.png");
+depthMap = new PIXI.Sprite.from("https://cdn-bretterick.netlify.app/images/depth-mask.png");
 depthMap.width = 920;
 depthMap.height = 1150;
 depthMap.anchor.set(0);
@@ -110,7 +110,7 @@ displacementFilter.scale.y = 0;
 
 img.filters = [displacementFilter];
 
-let frame = new PIXI.Sprite.from("https://static1.squarespace.com/static/5aac041c9f8770c50060dca8/t/6066c090c894556d34c57cb0/1617346711628/cutout-frame.png");
+let frame = new PIXI.Sprite.from("https://cdn-bretterick.netlify.app/images/cutout-frame.png");
 frame.width = 920;
 frame.height = 1150;
 frame.anchor.set(0);
